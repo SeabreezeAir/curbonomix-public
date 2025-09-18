@@ -1,5 +1,8 @@
 def apply_modifiers(base_price, spec):
     modifiers = []
+license_key = spec.get("license_key")
+if not is_valid_license(license_key):
+    return jsonify({"error": "Invalid or missing license key"}), 403
 
     # Insulation
     if getattr(spec, "insulated", False):

@@ -1,39 +1,40 @@
-from flask import Flask, request, jsonify, send_file
-from backend.quote_adapter import calculate_price, score_complexity, estimate_labor
-from backend.install_notes_generator import generate_notes
-from backend.bundle_adapter_packet import bundle_packet
 import os
+import sys
+from flask import Flask, request, jsonify
+
+# ✅ Absolute path patch to recognize backend
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, ROOT_DIR)
+
+from backend.quote_adapter import calculate_price, score_complexity, estimate_labor
+from backend.adapter_specs_db import list_all
+from backend.bundle_adapter_packet import bundle_packet
+from backend.license_checker import is_valid_license
 
 app = Flask(__name__)
 
 @app.route("/quote", methods=["POST"])
 def quote():
-    data = request.json
-    spec = type("Spec", (), data)()
+    spec = request.get_json()
+    if not spec:
+        return jsonify({"error": "Missing spec"}), 400
 
-    quote = {
-        "model": spec.model,
-        "price": calculate_price(spec),
-        "complexity": score_complexity(spec),
-        "labor_hours": estimate_labor(spec),
-        "powered_by": "CURBONOMIX"
-    }
+    license_key = spec.get("license_key")
+    if not is_valid_license(license_key):
+        return jsonify({"error": "Invalid or missing license key"}), 403
 
-    # Generate install packet
+    price = calculate_price(spec)
+    complexity = score_complexity(spec)
+    labor = estimate_labor(spec)
     zip_path = bundle_packet(spec)
-    generate_notes(spec)
 
     return jsonify({
-        "quote": quote,
-        "download_url": f"/download/{spec.model}.zip"
+        "model": spec["model"],
+        "price": price,
+        "complexity": complexity,
+        "labor_hours": labor,
+        "packet_zip": zip_path
     })
-
-@app.route("/download/<model>.zip", methods=["GET"])
-def download(model):
-    zip_path = f"C:/Curbonomix/curbonomix-public/exports/packets/{model}.zip"
-    if os.path.exists(zip_path):
-        return send_file(zip_path, as_attachment=True)
-    return jsonify({"error": "Packet not found"}), 404
 
 if __name__ == "__main__":
     app.run(port=5050)

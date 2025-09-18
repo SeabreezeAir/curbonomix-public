@@ -10,7 +10,11 @@ rtu_width = 30.0
 flange_height = 2.0
 
 # === Paths ===
-output_dir = os.path.expanduser("C:/Curbonomix/curbonomix-public/geometry")
+output_dir = os.path.join(os.getcwd(), "geometry")
+output_dir = os.path.join(os.getcwd(), "geometry")
+os.makedirs(output_dir, exist_ok=True)
+output_file = os.path.join(output_dir, "adapter_generator.FCStd")
+
 output_file = os.path.join(output_dir, "adapter_generator.FCStd")
 
 # === Create Document ===

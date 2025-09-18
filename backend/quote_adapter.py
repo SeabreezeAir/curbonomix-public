@@ -18,6 +18,9 @@ def calculate_price(spec):
     raw_price = base + complexity * 15 + labor * 40
     final_price, _ = apply_modifiers(raw_price, spec)
     return final_price
+license_key = spec.get("license_key")
+if not is_valid_license(license_key):
+    return jsonify({"error": "Invalid or missing license key"}), 403
 
 def quote_all():
     quotes = []
