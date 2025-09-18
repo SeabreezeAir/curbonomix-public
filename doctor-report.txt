@@ -1,0 +1,11 @@
+Curbonomix Doctor Report - 09/18/2025 07:16:44
+Node: v22.18.0
+npm:  10.9.3
+Python default: Python 3.13.7
+Python 3.11 available: True
+git version 2.51.0.windows.1
+Patched generate_adapter.py and ensured .\geometry
+Backend app.py exists (left as-is).
+Found existing package.json at:
+ - C:\Curbonomix\curbonomix-public\curbonomix-app\curbonomix-frontend\package.json
+Injected dev proxy into vite.config.js.
