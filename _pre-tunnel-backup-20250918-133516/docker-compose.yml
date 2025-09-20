@@ -4,7 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     container_name: curbonomix-backend
-    # 'ports' not required for Cloudflare, but useful for local checks:
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -12,11 +11,9 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile.frontend
     container_name: curbonomix-frontend
-    # map 80 locally (change to 5173:80 if port 80 is busy)
     ports:
-      - "80:80"
+      - "5173:80"
     depends_on:
       - backend
     restart: unless-stopped
