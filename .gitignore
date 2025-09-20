@@ -5,3 +5,5 @@ dist/
 **/*.pyc
 **/.env
 .DS_Store
+/curbonomix-app/Curbonomix-backend/
+/curbonomix-app/curbonomix-frontend/
